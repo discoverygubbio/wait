@@ -1,7 +1,10 @@
 name: Update index.html
 
 on:
-  workflow_dispatch:            # manual trigger
+  workflow_dispatch
+
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -10,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download index.html from Framer
         run: curl -L "https://waitdiscoverygubbio.framer.ai/" -o index.html
