@@ -1,7 +1,7 @@
 name: Update index.html
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,6 +19,14 @@ jobs:
       - name: Download index.html from Framer
         run: curl -L "https://waitdiscoverygubbio.framer.ai/" -o index.html
 
+      - name: Clean Framer badge and scripts
+        run: |
+          sed -i '/__framer-badge-container/d' index.html
+          sed -i '/framer\.js/d' index.html
+          sed -i '/framer\.css/d' index.html
+          sed -i '/__framer__/d' index.html
+          sed -i '/data-framer-name/d' index.html
+
       - name: Check for changes
         run: |
           if git diff --quiet index.html; then
@@ -33,5 +41,5 @@ jobs:
           git config user.name "gablilli"
           git config user.email "167802854+gablilli@users.noreply.github.com"
           git add index.html
-          git commit -m "chore: update root index.html from remote source"
+          git commit -m "chore: update and clean index.html from remote source"
           git push
