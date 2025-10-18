@@ -1,0 +1,32 @@
+name: Update index.html
+
+on:
+  workflow_dispatch:            # manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download index.html from Framer
+        run: curl -L "https://waitdiscoverygubbio.framer.ai/" -o index.html
+
+      - name: Check for changes
+        run: |
+          if git diff --quiet index.html; then
+            echo "CHANGES=false" >> $GITHUB_ENV
+          else
+            echo "CHANGES=true" >> $GITHUB_ENV
+          fi
+
+      - name: Commit & push if changes detected
+        if: env.CHANGES == 'true'
+        run: |
+          git config user.name "gablilli"
+          git config user.email "167802854+gablilli@users.noreply.github.com"
+          git add index.html
+          git commit -m "chore: update root index.html from remote source"
+          git push
