@@ -19,13 +19,17 @@ jobs:
       - name: Download index.html from Framer
         run: curl -L "https://waitdiscoverygubbio.framer.ai/" -o index.html
 
-      - name: Clean Framer badge and scripts
+      - name: Clean Framer badge, scripts, and preloads
         run: |
           sed -i '/__framer-badge-container/d' index.html
+          # Rimuove tutti gli script Framer JS/CSS
           sed -i '/framer\.js/d' index.html
           sed -i '/framer\.css/d' index.html
           sed -i '/__framer__/d' index.html
           sed -i '/data-framer-name/d' index.html
+          # Rimuove il blocco animatore enorme e i preload Framer
+          perl -0777 -i -pe 's|<script>var animator=.*?</script>||gs' index.html
+          perl -0777 -i -pe 's|<link[^>]*framerusercontent\.com[^>]*>||gs' index.html
 
       - name: Check for changes
         run: |
